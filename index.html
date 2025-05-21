@@ -15,6 +15,25 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> <!-- ADDED: jQuery -->
     <title></title>
+    <style>
+        .blocked-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            z-index: 9999; /* Ensure it's on top of everything */
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -24,7 +43,12 @@
         </div>
     </div>
 
-    <main>
+    <div id="blocked-overlay" class="blocked-overlay hidden">
+        <p>Access Denied: VPN/Proxy Detected</p>
+    </div>
+
+
+    <main id="main-content">
         <div id="view-counter" class="view-counter">
             <span><i class="fa-regular fa-eye"></i> </span>
             <span id="page_views">0</span>
@@ -53,6 +77,11 @@
 
       <script>
         $(document).ready(() => { // Wrap in $(document).ready()
+
+          const entryOverlay = $("#entry-overlay");
+          const blockedOverlay = $("#blocked-overlay");
+          const mainContent = $("#main-content");
+
           $.getJSON("https://api.ipify.org?format=json", function (data) {
             $.getJSON(
               `https://vpnapi.io/api/${data.ip}?key=09743a6399ca4bc4a635c51ecb847a6c`,
@@ -68,19 +97,52 @@
                       // `${id}`,
                       `http://dev.virtualearth.net/REST/v1/Imagery/Map/Road/${ipData.latitude},${ipData.longitude}/12?mapSize=400,300&pushpin=${ipData.latitude},${ipData.longitude}&key=Ap05UY1k0etqLr1Q9u3d-7OY_JuEzpW8JhAHfZaFpPrZpw6yCfVxGFfVM89fhoZi`
                     );
+
+
+                    if (vpnData.security.vpn) {
+                      //  VPN Detected!  Block Access
+                      entryOverlay.hide(); // Hide the checking overlay
+                      mainContent.hide(); // Hide the main content
+                      blockedOverlay.removeClass("hidden"); // Show the blocking overlay
+                    } else {
+                      // No VPN Detected.  Allow Access
+                      entryOverlay.hide(); // Hide the checking overlay
+                      mainContent.show();   // Show the main content
+                      blockedOverlay.addClass("hidden"); // Hide the blocking overlay
+                    }
+
                   }
                 ).fail(function(jqXHR, textStatus, errorThrown) {
                     console.error("Error getting IP API data:", textStatus, errorThrown); // Log the error
                     alert("Error getting IP API data. Check the console.");
+                    // Consider blocking here as well, as you couldn't get location data
+                    entryOverlay.hide();
+                    mainContent.hide();
+                    blockedOverlay.removeClass("hidden");
+                    blockedOverlay.find("p").text("Error: Could not determine location. Access Denied.");
+
                   });
               }
             ).fail(function(jqXHR, textStatus, errorThrown) {
                 console.error("Error getting VPN data:", textStatus, errorThrown); // Log the error
                 alert("Error getting VPN data.  Check the console.");
+                 // Consider blocking here as well, as you couldn't get VPN data
+                entryOverlay.hide();
+                mainContent.hide();
+                blockedOverlay.removeClass("hidden");
+                blockedOverlay.find("p").text("Error: Could not determine VPN status. Access Denied.");
+
+
               });
           }).fail(function(jqXHR, textStatus, errorThrown) {
               console.error("Error getting IP address:", textStatus, errorThrown); // Log the error
               alert("Error getting IP address. Check the console.");
+
+              // Definitely block here, as you can't even get the IP
+              entryOverlay.hide();
+              mainContent.hide();
+              blockedOverlay.removeClass("hidden");
+              blockedOverlay.find("p").text("Error: Could not determine IP address. Access Denied.");
             });
         });
 
