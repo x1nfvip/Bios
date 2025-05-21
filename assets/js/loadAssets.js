@@ -4,7 +4,7 @@ const discordId = '1367833754906923091'
 async function syncDisplayName() {
     const nameElement = document.querySelector('#who');
 
-    let response = await fetch(`https://api.wxrn.lol/api/discord/${discordId}`);
+    let response = await fetch(`https://api.wxrn.lol/discord/${discordId}`);
     const data = await response.json();
 
     if (data.displayName) {
@@ -54,7 +54,7 @@ async function fetchAvatarsForAll() {
 
 async function fetchImages(imgElement, userId) {
     try {
-        let response = await fetch(`https://api.wxrn.lol/api/discord/${userId}`);
+        let response = await fetch(`https://api.wxrn.lol/discord/${userId}`);
 
         if (!response.ok) {
             response = await fetch(`https://cors-anywhere.herokuapp.com/https://api.wxrn.lol/api/discord/${userId}`);
