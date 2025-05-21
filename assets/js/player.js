@@ -15,7 +15,7 @@ const lyricsDisplay = document.getElementById("lyricsDisplay");
 const lyricsCloseBtn = document.getElementById("lyrics-close");
 const lyricsButton = document.getElementById("lyrics-button");
 
-const API_URL = "https://api.wxrn.lol/api/lyrics";
+const API_URL = "https://api.wxrn.lol/lyrics";
 const defaultFooterText = "〤 Sudo PlayList  〤";
 
 const tracks = [
