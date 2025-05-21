@@ -9,4 +9,4 @@ function animateTitle(Title,delay){
     document.title=newtitle;
     },delay);
 }
-animateTitle('@emre',300);
+animateTitle('@r5qx.',300);
